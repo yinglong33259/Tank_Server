@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>坦克大战</title>
+</head>
+<body>
+<div id="tile_id"></div>
+<div id="xy"></div>
+<div id="vv"></div>
+<div style="position: absolute;top:50px;left: 50px;">
+    <canvas id="canvas" width="960" height="480" style="background: black"></canvas>
+</div>
+<script type="text/javascript" src="../myjs/tank_image_frame.js"></script>
+<script type="text/javascript">
+    tanks_Material.addEventListener('load',tanks_Material_Loaded,false);
+    function tanks_Material_Loaded(){
+        StartGame();
+    }
+</script>
+<script type="text/javascript" src="../myjs/tank_image_control.js"></script>
+<script type="text/javascript" src="../myjs/tank_toserver_websocket.js"></script>
+</body>
+</html>
