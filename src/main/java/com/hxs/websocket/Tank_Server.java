@@ -8,13 +8,14 @@ import javax.websocket.server.ServerEndpoint;
  */
 @ServerEndpoint(value = "/server")
 public class Tank_Server {
+
     @OnMessage
     public void onMessage(String message,Session session){
 
     }
     @OnOpen
     public void onOpen(Session session, EndpointConfig config){
-        System.out.println("liangjiechngogn");
+
     }
     @OnClose
     public void onClose(Session session, CloseReason reason){
