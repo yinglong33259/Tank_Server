@@ -15,7 +15,7 @@ public class Tank_Server {
     }
     @OnOpen
     public void onOpen(Session session, EndpointConfig config){
-    	System.out.println("ssssss");
+    	System.out.println("sssssssss");
     }
     @OnClose
     public void onClose(Session session, CloseReason reason){
