@@ -1,16 +1,31 @@
 package com.hxs.websocket;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import javax.websocket.Session;
+
 /**
  * Created by xiaoshan on 2017/4/27.
  */
 public class DataManager {
-    public int playerNum;
+	private static final DataManager dataManager=new DataManager();
+	
+	public int playerNum=0;
+	public HashMap<String, Session> sessions;
 
-    public int getPlayerNum() {
+	public int getPlayerNum() {
         return playerNum;
     }
 
     public void setPlayerNum(int playerNum) {
         this.playerNum = playerNum;
+    }
+    
+    private DataManager() {
+    	//其他类不可生成新的对象
+	}
+    public static synchronized DataManager  getInstance(){
+    	return dataManager;
     }
 }

@@ -1,5 +1,7 @@
 package com.hxs.websocket;
 
+import java.util.HashMap;
+
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 
@@ -8,21 +10,31 @@ import javax.websocket.server.ServerEndpoint;
  */
 @ServerEndpoint(value = "/server")
 public class Tank_Server {
-
+	private DataManager dataManager=DataManager.getInstance();
+	
     @OnMessage
     public void onMessage(String message,Session session){
     	
     }
     @OnOpen
     public void onOpen(Session session, EndpointConfig config){
-    	System.out.println("sssssssss");
+    	//游戏总人数加1
+    	dataManager.playerNum++;
+    	//Sessions数组加入浏览器Session绘画对象
+    	dataManager.sessions.put(session.getId(), session);
+    	//
+    	System.out.println(DataManager.getInstance().playerNum);
     }
     @OnClose
     public void onClose(Session session, CloseReason reason){
-
+    	//游戏总人数-1
+    	dataManager.playerNum--;
+    	//Sessions数组加入浏览器Session绘画对象Player
+    	dataManager.sessions.remove(session.getId());
+    	
     }
     @OnError
     public void onError(Session session, Throwable throwable){
-
+    	DataManager.getInstance().playerNum++;
     }
 }
