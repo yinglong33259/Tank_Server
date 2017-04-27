@@ -5,7 +5,7 @@ var theCanvas=document.getElementById("canvas");
 var context=theCanvas.getContext("2d");
 //图像源
 var tanks_Material=new Image();
-tanks_Material.src="../pic/spritelib_gpl/maze/tankbrigade.png";
+tanks_Material.src="./pic/spritelib_gpl/maze/tankbrigade.png";
 //地图矩阵
 var mapRows = 15;
 var mapCols = 30;

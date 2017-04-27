@@ -10,9 +10,9 @@ webSocket.onmessage = function(event) {onMessage(event)};
 webSocket.onerror=function(event){onError()};
 
 function onOpen(event) {
-    alert("lianjie");
+
 }
-//服务器端推送回来的消息
+
 function onMessage(event){
 
 }
