@@ -10,7 +10,7 @@ webSocket.onmessage = function(event) {onMessage(event)};
 webSocket.onerror=function(event){onError()};
 
 function onOpen(event) {
-
+	
 }
 
 function onMessage(event){
