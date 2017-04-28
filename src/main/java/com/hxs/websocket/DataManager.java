@@ -9,7 +9,7 @@ import javax.websocket.Session;
  * Created by xiaoshan on 2017/4/27.
  */
 public class DataManager {
-	private static final DataManager dataManager=new DataManager();
+	public static final DataManager dataManager=new DataManager();
 	
 	public int playerNum=0;
 	public HashMap<String, Session> sessions;
@@ -22,10 +22,18 @@ public class DataManager {
         this.playerNum = playerNum;
     }
     
-    private DataManager() {
+    public HashMap<String, Session> getSessions() {
+		return sessions;
+	}
+
+	public void setSessions(HashMap<String, Session> sessions) {
+		this.sessions = sessions;
+	}
+
+	private DataManager() {
     	//其他类不可生成新的对象
 	}
-    public static synchronized DataManager  getInstance(){
+    public static DataManager  getInstance(){
     	return dataManager;
     }
 }
