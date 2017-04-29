@@ -11,14 +11,15 @@
 <div style="position: absolute;top:50px;left: 50px;">
     <canvas id="canvas" width="960" height="480" style="background: black"></canvas>
 </div>
-<script type="text/javascript" src="../myjs/tank_image_frame.js"></script>
+<script type="text/javascript" src="./myjs/tank_image_frame.js"></script>
 <script type="text/javascript">
     tanks_Material.addEventListener('load',tanks_Material_Loaded,false);
     function tanks_Material_Loaded(){
         StartGame();
     }
+    
 </script>
-<script type="text/javascript" src="../myjs/tank_image_control.js"></script>
-<script type="text/javascript" src="../myjs/tank_toserver_websocket.js"></script>
+<script type="text/javascript" src="./myjs/tank_image_control.js"></script>
+<script type="text/javascript" src="./myjs/tank_toserver_websocket.js"></script>
 </body>
 </html>
