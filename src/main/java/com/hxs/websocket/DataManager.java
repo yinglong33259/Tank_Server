@@ -1,9 +1,14 @@
 package com.hxs.websocket;
 
-import org.json.JSONObject;
+
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.util.*;
 
+import javax.websocket.CloseReason;
+import javax.websocket.EndpointConfig;
 import javax.websocket.Session;
 
 /**
@@ -24,11 +29,31 @@ public class DataManager {
 	//房间信息,前为房间编号
 	public Hashtable<Integer,ArrayList<Session>> Rooms=new Hashtable<Integer,ArrayList<Session>>();
 	
-	public void onMessage(Session session){
-			
+	public void onMessage(String message,Session session){
+		ArrayList<Session> CurRoom=Rooms.get(SID_Room.get(session.getId()));
+		try{
+			JSONObject msg= (JSONObject) new JSONParser().parse(message);
+			switch (msg.get("type").toString()){
+				case "roomInfo":
+					for(int i=0;i<CurRoom.size();i++){
+						Session s=CurRoom.get(i);
+						s.getBasicRemote().sendText(message);
+					}
+					break;
+				case "tank_Position":
+					System.out.println(message);
+					for(int i=0;i<CurRoom.size();i++){
+						Session s=CurRoom.get(i);
+						s.getBasicRemote().sendText(message);
+					}
+					break;
+			}
+		}catch (Exception e){
+			e.printStackTrace();
 		}
+	}
 	
-	public void onOpen(Session session){
+	public void onOpen(Session session, EndpointConfig config){
 		//房间总人数++
 		playerNum++;
 		//
@@ -59,16 +84,26 @@ public class DataManager {
 		JSONObject roomInfo=new JSONObject();
 		roomInfo.put("type", "roomInfo");
 		int roomid=SID_Room.get(session.getId());
-
-
-
+		ArrayList<Session> curRoomSessions=Rooms.get(roomid);
+		roomInfo.put("room_ID",roomid);
+		roomInfo.put("playerNum", curRoomSessions.size());
+		String Str_SIDs="";
+		//给房间里的每个玩家都发送消息
+		for(int i = 0 ; i < curRoomSessions.size() ; i++){
+			Session s = curRoomSessions.get(i);
+			Str_SIDs=Str_SIDs+"*"+s.getId();
+		}
+		roomInfo.put("Str_SIDs",Str_SIDs);
+		roomInfo.put("mySession_ID",session.getId());
+		System.out.println(Str_SIDs);
+		onMessage(roomInfo.toJSONString(), session);
 
 	}
-	public void onClose(Session session){
+	public void onClose(Session session, CloseReason reason){
 		playerNum--;
 		sessions.remove(session.getId());
 	}
-	public void onError(Session session){
+	public void onError(Session session, Throwable throwable){
 		
 	}
 	

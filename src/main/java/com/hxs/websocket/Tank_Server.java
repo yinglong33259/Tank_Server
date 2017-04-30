@@ -12,18 +12,18 @@ public class Tank_Server {
 	
     @OnMessage
     public void onMessage(String message,Session session){
-    	dataManager.onMessage(session);
+    	dataManager.onMessage(message,session);
     }
     @OnOpen
     public void onOpen(Session session, EndpointConfig config){
-		dataManager.onOpen(session);
+		dataManager.onOpen(session,config);
     }
     @OnClose
     public void onClose(Session session, CloseReason reason){
-    	dataManager.onClose(session);
+    	dataManager.onClose(session,reason);
     }
     @OnError
     public void onError(Session session, Throwable throwable){
-    	dataManager.onError(session);
+    	dataManager.onError(session,throwable);
     }
 }

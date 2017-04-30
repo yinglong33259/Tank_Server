@@ -1,13 +1,13 @@
 /**
  * Created by xiaoshan on 2017/4/17.
  */
-var tankR=0;//控制坦克方向的变量
 function StartGame(){
     window.addEventListener("keydown",eventKeyDown,true);
     window.addEventListener("keyup",eventKeyUp,true);
-
+    setInterval(function () {
+        checkKeyStau();
+    },20);
     setInterval(drawScreen,50);
-    setInterval(checkKeyStau,20);
     function drawScreen() {
         //画出地图
         context.clearRect(0,0,theCanvas.width,theCanvas.height);
@@ -19,18 +19,18 @@ function StartGame(){
                 context.drawImage(tanks_Material, sourceX, sourceY, 32, 32, colCtr * 32, rowCtr * 32, 32, 32);
             }
         }
-        switch (tankR){ //绘制坦克主体
-            case 0 : context.drawImage(tanks_Material, tank_toLeft[tank_cur_frame][0], tank_toLeft[tank_cur_frame][1],
-                                        32, 32,tank_position_x,tank_position_y, 32, 32);
+        switch (tank_Position.R){ //绘制坦克主体
+            case 0 : context.drawImage(tanks_Material, tank_toLeft[tank_Position.F][0], tank_toLeft[tank_Position.F][1],
+                                        32, 32,tank_Position.X,tank_Position.Y, 32, 32);
                 break;
-            case 1 : context.drawImage(tanks_Material, tank_toTop[tank_cur_frame][0], tank_toTop[tank_cur_frame][1],
-                                        32, 32,tank_position_x,tank_position_y, 32, 32);
+            case 1 : context.drawImage(tanks_Material, tank_toTop[tank_Position.F][0], tank_toTop[tank_Position.F][1],
+                                        32, 32,tank_Position.X,tank_Position.Y, 32, 32);
                 break;
-            case 2 : context.drawImage(tanks_Material, tank_toRight[tank_cur_frame][0], tank_toRight[tank_cur_frame][1],
-                                        32, 32,tank_position_x,tank_position_y, 32, 32);
+            case 2 : context.drawImage(tanks_Material, tank_toRight[tank_Position.F][0], tank_toRight[tank_Position.F][1],
+                                        32, 32,tank_Position.X,tank_Position.Y, 32, 32);
                 break;
-            case 3 : context.drawImage(tanks_Material, tank_toButtom[tank_cur_frame][0], tank_toButtom[tank_cur_frame][1],
-                                        32, 32,tank_position_x,tank_position_y, 32, 32);
+            case 3 : context.drawImage(tanks_Material, tank_toButtom[tank_Position.F][0], tank_toButtom[tank_Position.F][1],
+                                        32, 32,tank_Position.X,tank_Position.Y, 32, 32);
         }
         //绘制子弹
         context.save();
@@ -74,7 +74,7 @@ function StartGame(){
 
     }
     function eventKeyUp(e){
-        tank_cur_frame=2;
+        tank_Position.F=2;
         var ecode=e.keyCode;
         if(ecode == 37 || ecode == 38 || ecode == 39 || ecode == 40 ){
             var keyStatus_p=ecode-37;
@@ -85,23 +85,23 @@ function StartGame(){
     }
     function addball(){
         var ball={};
-        ball.direction=tankR;
+        ball.direction=tank_Position.R;
         switch (ball.direction){
             case 0 :
-                ball.p_x=tank_position_x;
-                ball.p_y=tank_position_y+16;
+                ball.p_x=tank_Position.X;
+                ball.p_y=tank_Position.Y+16;
                 break;
             case 1 :
-                ball.p_x=tank_position_x+16;
-                ball.p_y=tank_position_y;
+                ball.p_x=tank_Position.X+16;
+                ball.p_y=tank_Position.Y;
                 break;
             case 2 :
-                ball.p_x=tank_position_x+32;
-                ball.p_y=tank_position_y+16;
+                ball.p_x=tank_Position.X+32;
+                ball.p_y=tank_Position.Y+16;
                 break;
             case 3 :
-                ball.p_x=tank_position_x+16;
-                ball.p_y=tank_position_y+32;
+                ball.p_x=tank_Position.X+16;
+                ball.p_y=tank_Position.Y+32;
                 break;
         }
         balls.push(ball);
@@ -112,90 +112,90 @@ function StartGame(){
             keyStatus[4]=0;
         }
         if(keyStatus[0]==1){//向左
-            if(tankR!=0){
+            if(tank_Position.R!=0){
                 document.getElementById("xy").innerHTML="";
-                tankR=0;
-                tank_cur_frame=2;
+                tank_Position.R=0;
+                tank_Position.F=2;
             }else{
-                if(tank_cur_frame<9){
-                    tank_cur_frame++;
+                if(tank_Position.F<9){
+                    tank_Position.F++;
                 }else{
-                    tank_cur_frame=2;
+                    tank_Position.F=2;
                 }
-                if(tank_position_x>0){//判断坦克是否超越左边界,未越界检查前方是否有障碍物
-                    var col=Math.ceil((tank_position_x)/32)-1;
-                    var row1=Math.floor(tank_position_y/32);
-                    var row2=Math.floor((tank_position_y+31)/32);
+                if(tank_Position.X>0){//判断坦克是否超越左边界,未越界检查前方是否有障碍物
+                    var col=Math.ceil((tank_Position.X)/32)-1;
+                    var row1=Math.floor(tank_Position.Y/32);
+                    var row2=Math.floor((tank_Position.Y+31)/32);
                     document.getElementById("xy").innerHTML="";
                     document.getElementById("xy").innerHTML="col:"+col+";"+"row1:"+row1+"row2:"+row2;
                     document.getElementById("vv").innerHTML="<br>"+tileMap[row1][col]+" "+tileMap[row2][col];
                     if(tileMap[row1][col] == 0 && tileMap[row2][col] ==0)
-                        tank_position_x-=1;
+                        tank_Position.X-=1;
                 }
 
             }
         }else if(keyStatus[1]==1){//向上
-            if(tankR!=1){
-                tankR=1;
-                tank_cur_frame=2;
+            if(tank_Position.R!=1){
+                tank_Position.R=1;
+                tank_Position.F=2;
             }else{
-                if(tank_cur_frame<9){
-                    tank_cur_frame++;
+                if(tank_Position.F<9){
+                    tank_Position.F++;
                 }else{
-                    tank_cur_frame=2;
+                    tank_Position.F=2;
                 }
-                if(tank_position_y>0){//判断坦克是否超越边界
-                    var row=Math.ceil((tank_position_y)/32)-1;
-                    var col1=Math.floor(tank_position_x/32);
-                    var col2=Math.floor((tank_position_x+31)/32);
+                if(tank_Position.Y>0){//判断坦克是否超越边界
+                    var row=Math.ceil((tank_Position.Y)/32)-1;
+                    var col1=Math.floor(tank_Position.X/32);
+                    var col2=Math.floor((tank_Position.X+31)/32);
                     document.getElementById("xy").innerHTML="";
                     document.getElementById("xy").innerHTML="row:"+row+";"+"col1:"+col1+"col2:"+col2;
                     document.getElementById("vv").innerHTML="<br>"+tileMap[row][col1]+" "+tileMap[row][col2];
                     if(tileMap[row][col1] == 0 && tileMap[row][col2] ==0)
-                        tank_position_y-=1;
+                        tank_Position.Y-=1;
                 }
             }
         }else if(keyStatus[2]==1){//向右
-            if(tankR!=2){
-                tankR=2;
-                tank_cur_frame=2;
+            if(tank_Position.R!=2){
+                tank_Position.R=2;
+                tank_Position.F=2;
             }else{
-                if(tank_cur_frame<9){
-                    tank_cur_frame++;
+                if(tank_Position.F<9){
+                    tank_Position.F++;
                 }else{
-                    tank_cur_frame=2;
+                    tank_Position.F=2;
                 }
-                if(tank_position_x<theCanvas.width-32){//判断坦克是否超越边界
-                    var col=Math.ceil((tank_position_x+33)/32)-1;
-                    var row1=Math.floor(tank_position_y/32);
-                    var row2=Math.floor((tank_position_y+31)/32);
+                if(tank_Position.X<theCanvas.width-32){//判断坦克是否超越边界
+                    var col=Math.ceil((tank_Position.X+33)/32)-1;
+                    var row1=Math.floor(tank_Position.Y/32);
+                    var row2=Math.floor((tank_Position.Y+31)/32);
                     document.getElementById("xy").innerHTML="";
                     document.getElementById("xy").innerHTML="col:"+col+";"+"row1:"+row1+"row2:"+row2;
                     document.getElementById("vv").innerHTML="<br>"+tileMap[row1][col]+" "+tileMap[row2][col];
                     if(tileMap[row1][col] == 0 && tileMap[row2][col] ==0)
-                        tank_position_x+=1;
+                        tank_Position.X+=1;
                 }
             }
         }else if(keyStatus[3]==1){ //向下
-            if(tankR!=3){
-                tankR=3;
-                tank_cur_frame=2;
+            if(tank_Position.R!=3){
+                tank_Position.R=3;
+                tank_Position.F=2;
             }else{
-                if(tank_cur_frame<9){
-                    tank_cur_frame++;
+                if(tank_Position.F<9){
+                    tank_Position.F++;
                 }else{
-                    tank_cur_frame=2;
+                    tank_Position.F=2;
                 }
             }
-            if(tank_position_y<theCanvas.height-32){//判断坦克是否超越下边界
-                var row=Math.ceil((tank_position_y+33)/32)-1;
-                var col1=Math.floor(tank_position_x/32);
-                var col2=Math.floor((tank_position_x+31)/32);
+            if(tank_Position.Y<theCanvas.height-32){//判断坦克是否超越下边界
+                var row=Math.ceil((tank_Position.Y+33)/32)-1;
+                var col1=Math.floor(tank_Position.X/32);
+                var col2=Math.floor((tank_Position.X+31)/32);
                 document.getElementById("xy").innerHTML="";
                 document.getElementById("xy").innerHTML="row:"+row+";"+"col1:"+col1+"col2:"+col2;
                 document.getElementById("vv").innerHTML="<br>"+tileMap[row][col1]+" "+tileMap[row][col2];
                 if(tileMap[row][col1] == 0 && tileMap[row][col2] ==0)
-                    tank_position_y+=1;
+                    tank_Position.Y+=1;
             }
         }
     }
@@ -264,5 +264,10 @@ function StartGame(){
                 return false;
             }
         }
+    }
+    function  sendPosition() {
+        tank_Position.tankID=mySession_ID;
+        tank_Position.type="tank_Position";
+        webSocket.send(JSON.stringify(tank_Position));
     }
 }
