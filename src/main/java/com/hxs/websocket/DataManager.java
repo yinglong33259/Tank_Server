@@ -7,30 +7,32 @@ import org.json.simple.parser.JSONParser;
 
 import java.util.*;
 
-import javax.websocket.CloseReason;
-import javax.websocket.EndpointConfig;
-import javax.websocket.Session;
+import javax.websocket.*;
+import javax.websocket.server.ServerEndpoint;
 
 /**
  * Created by xiaoshan on 2017/4/27.
  */
+@ServerEndpoint(value = "/server")
 public class DataManager {
-	public static final DataManager dataManager=new DataManager();
-	
-	public int playerNum=0,roomScale=2;
+	//public static final DataManager dataManager=new DataManager();
+	private Session session1;
+	static int playerNum=0,roomScale=2;
 	//房间链表
-	public LinkedList<Integer> roomList=new LinkedList<Integer>();
+	static LinkedList<Integer> roomList=new LinkedList<Integer>();
 	//房间大小,前为房间编号，后为房间当前人数
-	public Hashtable<Integer,Integer> roomSize=new Hashtable<Integer,Integer>();
+	static Hashtable<Integer,Integer> roomSize=new Hashtable<Integer,Integer>();
 	//
-	public Hashtable<String, Session> sessions=new Hashtable<String, Session>();
+	static Hashtable<String, Session> sessions=new Hashtable<String, Session>();
 	//保存用户在哪房间
-	public Hashtable<String,Integer> SID_Room=new Hashtable<String, Integer>();
+	static Hashtable<String,Integer> SID_Room=new Hashtable<String, Integer>();
 	//房间信息,前为房间编号
-	public Hashtable<Integer,ArrayList<Session>> Rooms=new Hashtable<Integer,ArrayList<Session>>();
-	
+	static Hashtable<Integer,ArrayList<Session>> Rooms=new Hashtable<Integer,ArrayList<Session>>();
+
+	@OnMessage
 	public void onMessage(String message,Session session){
 		ArrayList<Session> CurRoom=Rooms.get(SID_Room.get(session.getId()));
+		System.out.println("roompeople:"+CurRoom.size());
 		try{
 			JSONObject msg= (JSONObject) new JSONParser().parse(message);
 			switch (msg.get("type").toString()){
@@ -52,8 +54,9 @@ public class DataManager {
 			e.printStackTrace();
 		}
 	}
-	
+	@OnOpen
 	public void onOpen(Session session, EndpointConfig config){
+		this.session1=session;
 		//房间总人数++
 		playerNum++;
 		//
@@ -99,10 +102,13 @@ public class DataManager {
 		onMessage(roomInfo.toJSONString(), session);
 
 	}
+
+	@OnClose
 	public void onClose(Session session, CloseReason reason){
 		playerNum--;
 		sessions.remove(session.getId());
 	}
+	@OnError
 	public void onError(Session session, Throwable throwable){
 		
 	}
@@ -137,10 +143,10 @@ public class DataManager {
 		this.sessions = sessions;
 	}
 
-	private DataManager() {
-    	//其他类不可生成新的对象
-	}
-    public static DataManager  getInstance(){
-    	return dataManager;
-    }
+//	private DataManager() {
+//    	//其他类不可生成新的对象
+//	}
+//    public static DataManager  getInstance(){
+//    	return dataManager;
+//    }
 }
