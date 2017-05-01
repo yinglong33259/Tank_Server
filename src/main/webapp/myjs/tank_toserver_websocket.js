@@ -18,15 +18,18 @@ function onMessage(event){
     switch (data.type){
         case "roomInfo":
            mySession_ID=data.mySession_ID;
+           tank_Position.tankID=data.mySession_ID;
             break;
         case "tank_Position":
-            if(data.tankID!=mySession_ID){
-                tank_Position.R=data.R;
-                tank_Position.X=data.X;
-                tank_Position.Y=data.Y;
-                tank_Position.F=data.F;
+            try{
+                if(data.tankID != mySession_ID){
+                    tank_Position.R=data.R;
+                    tank_Position.X=data.X;
+                    tank_Position.Y=data.Y;
+                    tank_Position.F=data.F;
+                }
+            }catch (err){
             }
-
             break;
     }
 }

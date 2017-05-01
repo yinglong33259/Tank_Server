@@ -50,6 +50,7 @@ var balls=new Array();
 //    40:0, //上下按钮事件会出现堆叠
 //    32:0 //子弹按钮
 //}
+
 var keyStatus=[0,0,0,0,0];
 //声明一个时间线
 var timeLine=0;

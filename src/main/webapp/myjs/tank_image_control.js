@@ -6,6 +6,7 @@ function StartGame(){
     window.addEventListener("keyup",eventKeyUp,true);
     setInterval(function () {
         checkKeyStau();
+        sendPosition();
     },20);
     setInterval(drawScreen,50);
     function drawScreen() {
@@ -266,7 +267,8 @@ function StartGame(){
         }
     }
     function  sendPosition() {
-        tank_Position.tankID=mySession_ID;
+        if(mySession_ID != undefined)
+            tank_Position.tankID=mySession_ID;
         tank_Position.type="tank_Position";
         webSocket.send(JSON.stringify(tank_Position));
     }
