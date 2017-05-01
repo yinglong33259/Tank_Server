@@ -112,36 +112,6 @@ public class DataManager {
 	public void onError(Session session, Throwable throwable){
 		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public int getPlayerNum() {
-        return playerNum;
-    }
-
-    public void setPlayerNum(int playerNum) {
-        this.playerNum = playerNum;
-    }
-    
-    public Hashtable<String, Session> getSessions() {
-		return sessions;
-	}
-
-	public void setSessions(Hashtable<String, Session> sessions) {
-		this.sessions = sessions;
-	}
 
 //	private DataManager() {
 //    	//其他类不可生成新的对象
