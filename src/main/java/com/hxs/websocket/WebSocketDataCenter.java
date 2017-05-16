@@ -34,7 +34,7 @@ public class WebSocketDataCenter {
 	 */
 	Hashtable<String, Session> sessions=new Hashtable<String, Session>();
 	/**
-	 * 保存用户在哪房间
+	 * 保存用户在哪房间,前为用户session的ID，后为房间编号
 	 */
 	Hashtable<String,Integer> SID_Room=new Hashtable<String, Integer>();
 	/**
@@ -45,7 +45,10 @@ public class WebSocketDataCenter {
 	 * 保存每个房间的游戏中心数据，前为房间ID，后为游戏房间数据
 	 */
 	Hashtable<Integer, GameDateCenter> GDCs=new Hashtable<Integer, GameDateCenter>();
-	
+	/**
+	 * 房间数据是否加载完毕，前为房间ID，后为是否加载成功标志，0未加载
+	 */
+	Hashtable<Integer, Integer> isLoaded = new Hashtable<Integer,Integer>();
 	public static WebSocketDataCenter getInstance(){
 		return WSDC;
 	}

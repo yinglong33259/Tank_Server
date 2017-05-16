@@ -14,21 +14,18 @@ function onOpen(event) {
 }
 
 function onMessage(event){
-    var data = eval("("+event.data.trim()+")");
+	var data = JSON.parse(event.data);
     switch (data.type){
         case "roomInfo":
            mySession_ID=data.mySession_ID;
            tank_Position.tankID=data.mySession_ID;
             break;
-        case "tank_Position":
+        case "tanks_info":
             try{
-                if(data.tankID != mySession_ID){
-                    tank_Position.R=data.R;
-                    tank_Position.X=data.X;
-                    tank_Position.Y=data.Y;
-                    tank_Position.F=data.F;
-                }
+            	tanks= JSON.parse(data.value);
+            	console.log(tanks[0].X);
             }catch (err){
+            	alert(err);
             }
             break;
     }

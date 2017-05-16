@@ -17,11 +17,14 @@ public class Tank_Server {
 	private static WebSocketDataCenter WSDC = WebSocketDataCenter.getInstance();
 	
 	private GameDateCenter gDC;
-	private boolean isLoaded_GDC = false;
+	private boolean isLoaded_gDC = false;
 	private Session mySession;
 	private int roomid;
 	@OnMessage
 	public void onMessage(String message,Session session){
+		if(!isLoaded_gDC){
+			getIniData();
+		}
 		ArrayList<Session> CurRoom=WSDC.Rooms.get(WSDC.SID_Room.get(mySession.getId()));
 		System.out.println("roompeople:"+CurRoom.size());
 		try{
@@ -34,9 +37,14 @@ public class Tank_Server {
 					}
 					break;
 				case "tank_move_R"://坦克运动方向改变
-					System.out.println(gDC.mapCols);
+					System.out.println(mySession.getId()+":ssssssssssssssssssssssssssssssssssss");
+					gDC.tanks.get(mySession.getId()).setR(Integer.parseInt(msg.get("R").toString()));
+					gDC.tanks.get(mySession.getId()).setMove(true);
+					System.out.println("ans:"+gDC.tanks.get(mySession.getId()).getR());
 					break;
 				case "tank_move_Stop"://坦克停止运动
+					gDC.tanks.get(mySession.getId()).setR(Integer.parseInt(msg.get("R").toString()));
+					gDC.tanks.get(mySession.getId()).setMove(false);
 					
 					break;
 				case "tank_fire_Open"://坦克开火
@@ -52,6 +60,7 @@ public class Tank_Server {
 	}
 	@OnOpen
 	public void onOpen(Session session, EndpointConfig config){
+		System.out.println("尝试连接了>>>>>>>>>>>>>>>>>>>>>>>>>.");
 		this.mySession=session;
 		//房间总人数++
 		WSDC.playerNum++;
@@ -67,7 +76,7 @@ public class Tank_Server {
 		if(WSDC.roomList.size()* WSDC.roomScale < WSDC.playerNum){
 			WSDC.roomList.add(WSDC.roomList.getLast()+1);
 			WSDC.SID_Room.put(mySession.getId(),WSDC.roomList.getLast());
-			WSDC.Rooms.put(WSDC.roomList.getLast()+1,new ArrayList<>());
+			WSDC.Rooms.put(WSDC.roomList.getLast(),new ArrayList<>());
 			WSDC.Rooms.get(WSDC.roomList.getLast()).add(mySession);
 			WSDC.roomSize.put(WSDC.roomList.getLast(),1);
 		}else{//往人数不够的房间加人
@@ -77,7 +86,7 @@ public class Tank_Server {
 					WSDC.Rooms.get(entry.getKey()).add(mySession);
 					WSDC.roomSize.put(entry.getKey(), entry.getValue()+1);
 					//如果房间人数达到2，开始游戏game
-					if(entry.getValue()==2){
+					if(entry.getValue()== WSDC.roomScale){
 						GenOneGame(entry.getKey());
 					}
 				}
@@ -100,30 +109,57 @@ public class Tank_Server {
 		roomInfo.put("mySession_ID",mySession.getId());
 		System.out.println(Str_SIDs);
 		onMessage(roomInfo.toJSONString(), mySession);
-
+		
 	}
 
 	@OnClose
 	public void onClose(Session session, CloseReason reason){
+		System.out.println("用户："+mySession.getId()+" 连接正常关闭");
+		//总人数减1
 		WSDC.playerNum--;
 		WSDC.sessions.remove(mySession.getId());
+		//移除session与房间的关系
+		WSDC.SID_Room.remove(mySession.getId());
+		//房间在线人数减一
+		int curRoomNum = WSDC.roomSize.get(roomid) - 1;
+		if(curRoomNum != 0){
+			WSDC.roomSize.put(roomid, curRoomNum);
+			WSDC.Rooms.get(roomid).remove(mySession);
+		}else{//需要关闭这个房间了
+			WSDC.roomSize.remove(roomid);
+			WSDC.Rooms.remove(roomid);
+			WSDC.roomList.remove(WSDC.roomList.indexOf(roomid));
+			WSDC.GDCs.remove(roomid);
+			WSDC.isLoaded.remove(roomid);
+		}
+		
+		
 	}
 	@OnError
 	public void onError(Session session, Throwable throwable){
-		
+		System.out.println("用户："+mySession.getId()+" 连接异常关闭");
+		CloseReason reason = null;
+		onClose(mySession, reason);
 	}
 	
 	public void GenOneGame(int room_id){
 		RunOneRoomGameLogic RORGl =new RunOneRoomGameLogic(WSDC,room_id);
 		Thread S_RORGL = new Thread(RORGl,"tank_room_id-"+room_id);
 		S_RORGL.start();
-		this.gDC = WSDC.GDCs.get(room_id);
-		while( !isLoaded_GDC){
+		while( WSDC.isLoaded.get(room_id) == null){
 			if(WSDC.GDCs.get(room_id) != null){
 				//到此游戏初始化成功
 				System.out.println("到此游戏初始化成功");
-				isLoaded_GDC=true;
+				WSDC.isLoaded.put(room_id, 1);
 			}
 		}
+	}
+	
+	public void getIniData(){
+		if(WSDC.isLoaded.get(roomid) !=null && WSDC.isLoaded.get(roomid)==1 ){
+			this.isLoaded_gDC =true;
+			this.gDC=WSDC.GDCs.get(roomid);
+		}
+		System.out.println("房间："+roomid+" 玩家："+mySession.getId()+"游戏数据中心初始化结束");
 	}
 }

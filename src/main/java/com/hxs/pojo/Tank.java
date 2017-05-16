@@ -27,6 +27,8 @@ public class Tank {
 	/**
 	 * 坦克当前的帧显示状态0-9
 	 */
+	private boolean isMove;
+	
 	private int F;
 	
 	public int getX() {
@@ -59,7 +61,12 @@ public class Tank {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+	public boolean isMove() {
+		return isMove;
+	}
+	public void setMove(boolean isMove) {
+		this.isMove = isMove;
+	}
 	@Override
 	public String toString() {
 		return "Tank [id=" + id + ", X=" + X + ", Y=" + Y + ", R=" + R + ", F=" + F + "]";
@@ -73,7 +80,7 @@ public class Tank {
 		Json_tank.put("Y", this.getY());
 		Json_tank.put("F", this.getF());
 		Json_tank.put("R", this.getR());
-		
+		Json_tank.put("isMove", this.isMove());
 		return Json_tank;
 	}
 	
