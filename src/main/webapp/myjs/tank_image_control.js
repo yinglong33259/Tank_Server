@@ -4,10 +4,7 @@
 function StartGame(){
     window.addEventListener("keydown",eventKeyDown,true);
     window.addEventListener("keyup",eventKeyUp,true);
-//    setInterval(function () {
-//        checkKeyStau();
-//    },20);
-    //setInterval(sendPosition,5000);
+
     setInterval(drawScreen,50);
     function drawScreen() {
         //画出地图
@@ -24,18 +21,18 @@ function StartGame(){
         if(tanks.length!=0){
         	for(var i=0;i<tanks.length;i++){
         		switch (tanks[i].R){ 
-                case 0 : context.drawImage(tanks_Material, tank_toLeft[tanks[i].F][0], tank_toLeft[tanks[i].F][1],
-                                            32, 32,tanks[i].X,tanks[i].Y, 32, 32);
-                    break;
-                case 1 : context.drawImage(tanks_Material, tank_toTop[tanks[i].F][0], tank_toTop[tanks[i].F][1],
-                                            32, 32,tanks[i].X,tanks[i].Y, 32, 32);
-                    break;
-                case 2 : context.drawImage(tanks_Material, tank_toRight[tank_Position.F][0], tank_toRight[tanks[i].F][1],
-                                            32, 32,tanks[i].X,tanks[i].Y, 32, 32);
-                    break;
-                case 3 : context.drawImage(tanks_Material, tank_toButtom[tank_Position.F][0], tank_toButtom[tanks[i].F][1],
-                                            32, 32,tanks[i].X,tanks[i].Y, 32, 32);
-            }
+	                case 0 : context.drawImage(tanks_Material, tank_toLeft[tanks[i].F][0], tank_toLeft[tanks[i].F][1],
+	                                            32, 32,tanks[i].X,tanks[i].Y, 32, 32);
+	                    break;
+	                case 1 : context.drawImage(tanks_Material, tank_toTop[tanks[i].F][0], tank_toTop[tanks[i].F][1],
+	                                            32, 32,tanks[i].X,tanks[i].Y, 32, 32);
+	                    break;
+	                case 2 : context.drawImage(tanks_Material, tank_toRight[tanks[i].F][0], tank_toRight[tanks[i].F][1],
+	                                            32, 32,tanks[i].X,tanks[i].Y, 32, 32);
+	                    break;
+	                case 3 : context.drawImage(tanks_Material, tank_toButtom[tanks[i].F][0], tank_toButtom[tanks[i].F][1],
+	                                            32, 32,tanks[i].X,tanks[i].Y, 32, 32);
+        		}
         	}
         }
         //绘制子弹
@@ -113,29 +110,7 @@ function StartGame(){
     }
     
     
-//    function eventKeyDown(e){
-//        var ecode=e.keyCode;
-//        if(ecode == 37 || ecode == 38 || ecode == 39 || ecode == 40){
-//            var keyStatus_p=ecode-37;//如果等于0代表按下左键
-//            for(var i=0;i<keyStatus.length-1;i++){
-//                keyStatus[i]=0;
-//            }
-//            keyStatus[keyStatus_p]=1;
-//        }else if(ecode == 32 ){
-//            keyStatus[4]=1;
-//        }
-//
-//    }
-//    function eventKeyUp(e){
-//        tank_Position.F=2;
-//        var ecode=e.keyCode;
-//        if(ecode == 37 || ecode == 38 || ecode == 39 || ecode == 40 ){
-//            var keyStatus_p=ecode-37;
-//            keyStatus[keyStatus_p]=0;
-//        }else if(ecode == 32 ){
-//            keyStatus[4]=0;
-//        }
-//    }
+
 //    function addball(){
 //        var ball={};
 //        ball.direction=tank_Position.R;

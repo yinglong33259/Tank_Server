@@ -12,12 +12,14 @@ import javax.websocket.Session;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.hxs.pojo.Ball;
 import com.hxs.pojo.Tank;
 
 public class RunOneRoomGameLogic implements Runnable{
 	private static WebSocketDataCenter wSDC;
 	private GameDateCenter gDC = GameDateCenter.getInstance();
 	ArrayList<Session> palyers;
+	
 	/**
 	 * 当前游戏房间的ID
 	 */
@@ -44,7 +46,7 @@ public class RunOneRoomGameLogic implements Runnable{
 			Tank t= new Tank();
 			t.setId(palyers.get(i).getId());
 			t.setR(0);
-			t.setF(0);
+			t.setF(2);
 			t.setX(98);
 			t.setY(98*(i+1));
 			t.setMove(false);
@@ -66,6 +68,7 @@ public class RunOneRoomGameLogic implements Runnable{
 					//System.out.println("游戏运行中........");
 					refreshTankStau();
 					try {
+						sendBallInfo();
 						sendTanksInfo();
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -75,6 +78,7 @@ public class RunOneRoomGameLogic implements Runnable{
 					System.out.println("房间"+room_id+"：游戏运行结束........");
 				}
 			}
+
 		}, 50, 50);//2s后开始执行，每次执行20ms
 	}
 	@SuppressWarnings("unchecked")
@@ -104,53 +108,107 @@ public class RunOneRoomGameLogic implements Runnable{
 	 * 检验坦克下一步运动位置是否合法
 	 * @param t 坦克
 	 */
-	public void checkTankPosition(Tank t){
+	private void checkTankPosition(Tank t){
+		if(!checkTankCrash(t))
+			return;
 		int tank_x = t.getX();
 		int tank_y = t.getY();
-		
+		int tank_f = t.getF();
 		if(t.isMove()){
+			if(tank_f<9){
+				t.setF(++tank_f);
+			}else{
+				t.setF(3);
+			}
 			switch (t.getR()) {
 			case 0:
-				if(t.getX() > 0){
-					int col= Math.floorDiv(tank_x - 1,32) ;
+				if(tank_x > 0){
+					int col= Math.floorDiv(tank_x - gDC.tank_Speed,32) ;
 					int row1= Math.floorDiv(tank_y,32) ;
-					int row2= Math.floorDiv((tank_y+31),32)	 ;
-					if( row1 >=0 && row2 >= 0){
-						if(gDC.tileMap[row1][col] == 0 && gDC.tileMap[row2][col] ==0)
-		                      t.setX(tank_x-2);
-					}
+					int row2= Math.floorDiv((tank_y+31),32);
+					if(gDC.tileMap[row1][col] == 0 && gDC.tileMap[row2][col] ==0)
+	                      t.setX(tank_x - gDC.tank_Speed);
 				}
 				break;
 			case 1:
-				if(t.getY() > 0){
-					 int row =(int) Math.floorDiv(tank_y - 1,32);
+				if(tank_y > 0){
+					 int row =(int) Math.floorDiv(tank_y - gDC.tank_Speed,32);
 					 int col1=(int) Math.floorDiv(tank_x,32);
 					 int col2=(int) Math.floorDiv(tank_x+31,32);
 					 if(gDC.tileMap[row][col1] == 0 && gDC.tileMap[row][col2] ==0)
-						 t.setY(tank_y-2);
+						 t.setY(tank_y - gDC.tank_Speed);
 				}
 				break;
 			case 2:
-				if(t.getX() < (gDC.mapCols-1) * gDC.Seq_width){
-					int col=(int) Math.floorDiv((tank_x+31)+1,32);
+				if(tank_x < (gDC.mapCols-1) * gDC.Seq_width){
+					int col=(int) Math.floorDiv((tank_x+31)+gDC.tank_Speed,32);
 					int row1=(int) Math.floorDiv(tank_y,32);
 					int row2=(int) Math.floorDiv((tank_y+31),32);
 					if(gDC.tileMap[row1][col] == 0 && gDC.tileMap[row2][col] ==0)
-						t.setX(tank_x + 2);
+						t.setX(tank_x + gDC.tank_Speed);
 				}
 				break;
 			case 3:
-				if(t.getY() < (gDC.mapRows-1) * gDC.Seq_width){
-					int row = Math.floorDiv((tank_y+31)+1,32);
+				if(tank_y < (gDC.mapRows-1) * gDC.Seq_width){
+					int row = Math.floorDiv((tank_y+31)+gDC.tank_Speed,32);
 					int col1= Math.floorDiv(tank_x,32);
 					int col2= Math.floorDiv((tank_x+31),32);
 	                if(gDC.tileMap[row][col1] == 0 && gDC.tileMap[row][col2] ==0)
-	                	t.setY(tank_y + 2);
+	                	t.setY(tank_y + gDC.tank_Speed);
 				}
 				break;
 			default:
 				break;
 			}
+		}else{
+			t.setF(2);
+		}
+	}
+	/**
+	 * 检查坦克是否发生碰撞
+	 * r坦克运动方向
+	 */
+	private boolean checkTankCrash(Tank t){
+		int tank_x = t.getX();
+		int tank_y = t.getY();
+		switch (t.getR()) {
+			case 0:
+				tank_x -= gDC.tank_Speed;
+				break;
+			case 1:
+				tank_y -= gDC.tank_Speed;
+				break;
+			case 2:
+				tank_x += gDC.tank_Speed;
+				break;
+			case 3:
+				tank_y += gDC.tank_Speed;
+				break;
+		}
+		for(Map.Entry<String, Tank> entry:gDC.tanks.entrySet()){
+			if(entry.getKey()!=t.getId()){
+				if( Math.abs(tank_y - entry.getValue().getY()) < 30 &&
+						Math.abs(tank_x - entry.getValue().getX()) < 30
+						)
+					return false;
+			}
+		}
+		return true;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void sendBallInfo() throws IOException {
+		JSONObject sendNew = new JSONObject();
+		JSONArray ja =new JSONArray();
+		for(int i=0 ;i<gDC.balls.size();i++){
+			ja.add(gDC.balls.get(i).getJsonObject());
+		}
+		sendNew.put("type", "balls_info");
+		sendNew.put("value", ja.toJSONString());
+		String str_sendNew=sendNew.toJSONString();
+		
+		for(int i=0;i<palyers.size();i++){
+			palyers.get(i).getBasicRemote().sendText(str_sendNew);
 		}
 	}
 }

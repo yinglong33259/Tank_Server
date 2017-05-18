@@ -1,4 +1,7 @@
 package com.hxs.pojo;
+
+import org.json.simple.JSONObject;
+
 /**
  * 子弹类
  * @author xiaoshan
@@ -38,6 +41,13 @@ public class Ball {
 	@Override
 	public String toString() {
 		return "Ball [x=" + x + ", y=" + y + ", r=" + r + "]";
+	}
+	public Object getJsonObject() {
+		JSONObject Json_ball = new JSONObject();
+		Json_ball.put("X", this.getX());
+		Json_ball.put("Y", this.getY());
+		Json_ball.put("R", this.getR());
+		return Json_ball;
 	}
 	
 	

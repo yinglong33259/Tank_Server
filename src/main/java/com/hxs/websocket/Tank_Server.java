@@ -9,6 +9,9 @@ import javax.websocket.server.ServerEndpoint;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import com.hxs.pojo.Ball;
+import com.hxs.pojo.Tank;
+
 /**
  * Created by xiaoshan on 2017/4/25.
  */
@@ -48,6 +51,31 @@ public class Tank_Server {
 					
 					break;
 				case "tank_fire_Open"://坦克开火
+					System.out.println("fire");
+					Tank t=gDC.tanks.get(mySession.getId());
+					Ball b = new Ball();
+					b.setR(t.getR());
+					switch (t.getR()) {
+						case 0:
+							b.setX(t.getX());
+							b.setY(t.getY() + gDC.Seq_width/2);
+							break;
+						case 1:
+							b.setX(t.getX() + gDC.Seq_width/2);
+							b.setY(t.getY());
+							break;
+						case 2:
+							b.setX(t.getX() + gDC.Seq_width);
+							b.setY(t.getY() + gDC.Seq_width/2);
+							break;
+						case 3:
+							b.setX(t.getX() + gDC.Seq_width/2);
+							b.setY(t.getY() + gDC.Seq_width);
+							break;
+						default:
+							break;
+					}
+					gDC.balls.add(b);
 					
 					break;
 				case "tank_fire_Stop"://坦克停火

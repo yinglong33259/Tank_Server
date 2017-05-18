@@ -28,6 +28,14 @@ function onMessage(event){
             	alert(err);
             }
             break;
+        case "balls_info":
+            try{
+            	balls= JSON.parse(data.value);
+            	console.log(balls.length);
+            }catch (err){
+            	alert(err);
+            }
+            break;
     }
 }
 function onClose(event){

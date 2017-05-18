@@ -43,11 +43,12 @@ public class GameDateCenter {
 	 * 坦克的数组,前为玩家session_ID;
 	 */
 	HashMap<String,Tank> tanks=new HashMap<String,Tank>();
-	/**,
+	/**
 	 * 子弹数组
 	 */
 	ArrayList<Ball> balls=new ArrayList<Ball>();
-
+	int tank_Speed = 2;
+	int ball_Speed = 4;
 	public static GameDateCenter getInstance(){
 		return new GameDateCenter();
 	}
