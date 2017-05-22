@@ -23,7 +23,7 @@ function onMessage(event){
         case "tanks_info":
             try{
             	tanks= JSON.parse(data.value);
-            	console.log(tanks[0].X);
+            	//console.log(tanks[0].X);
             }catch (err){
             	alert(err);
             }
@@ -31,7 +31,7 @@ function onMessage(event){
         case "balls_info":
             try{
             	balls= JSON.parse(data.value);
-            	console.log(balls.length);
+            	//console.log(balls.toString());
             }catch (err){
             	alert(err);
             }

@@ -165,9 +165,9 @@ public class Tank_Server {
 	}
 	@OnError
 	public void onError(Session session, Throwable throwable){
-		System.out.println("用户："+mySession.getId()+" 连接异常关闭");
-		CloseReason reason = null;
-		onClose(mySession, reason);
+//		System.out.println("用户："+mySession.getId()+" 连接异常关闭");
+//		CloseReason reason = null;
+//		onClose(mySession, reason);
 	}
 	
 	public void GenOneGame(int room_id){

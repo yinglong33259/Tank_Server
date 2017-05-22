@@ -36,31 +36,15 @@ function StartGame(){
         	}
         }
         //绘制子弹
-//        context.save();
-//        for(var i=0;i<balls.length;i++){
-//            switch (balls[i].direction){
-//                case 0:
-//                    balls[i].p_x-=5;
-//                    break;
-//                case 1:
-//                    balls[i].p_y-=5;
-//                    break;
-//                case 2:
-//                    balls[i].p_x+=5;
-//                    break;
-//                case 3:
-//                    balls[i].p_y+=5;
-//                    break;
-//            }
-//            if(checkBallStau(i,balls[i]) == true){
-//                context.fillStyle="gold";
-//                context.beginPath();
-//                context.arc(balls[i].p_x,balls[i].p_y,4,0,Math.PI*2,true);
-//                context.closePath();
-//                context.fill();
-//            }
-//        }
-//        context.restore();
+       context.save();
+       for(var i=0;i<balls.length;i++){
+		   context.fillStyle="gold";
+		   context.beginPath();
+		   context.arc(balls[i].X,balls[i].Y,4,0,Math.PI*2,true);
+		   context.closePath();
+		   context.fill();
+       }
+       context.restore();
     }
     
     function eventKeyDown(e){

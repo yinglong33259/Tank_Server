@@ -67,6 +67,7 @@ public class RunOneRoomGameLogic implements Runnable{
 				if(wSDC.roomSize.get(room_id) != null){
 					//System.out.println("游戏运行中........");
 					refreshTankStau();
+					refreshBallStau();
 					try {
 						sendBallInfo();
 						sendTanksInfo();
@@ -102,6 +103,12 @@ public class RunOneRoomGameLogic implements Runnable{
 		for(Map.Entry<String, Tank> entry:gDC.tanks.entrySet()){
 			Tank t = entry.getValue();
 			checkTankPosition(t);
+		}
+	}
+	public void refreshBallStau(){
+		for(int i=0;i<gDC.balls.size();i++){
+			Ball b = gDC.balls.get(i);
+			checkBallPosition(b,i);
 		}
 	}
 	/**
@@ -195,7 +202,7 @@ public class RunOneRoomGameLogic implements Runnable{
 		}
 		return true;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void sendBallInfo() throws IOException {
 		JSONObject sendNew = new JSONObject();
@@ -210,5 +217,33 @@ public class RunOneRoomGameLogic implements Runnable{
 		for(int i=0;i<palyers.size();i++){
 			palyers.get(i).getBasicRemote().sendText(str_sendNew);
 		}
+	}
+	public void checkBallPosition(Ball b,int index){
+		int ball_x=b.getX();
+		int ball_y=b.getY();
+		int ball_r=b.getR();
+		switch (ball_r){
+			case 0:
+				if(ball_x - gDC.ball_radius > 0){
+					int col= Math.floorDiv(ball_x - gDC.ball_Speed -gDC.ball_radius ,32);
+					int row1= Math.floorDiv(ball_y - gDC.ball_radius,32);
+					int row2= Math.floorDiv((ball_y + gDC.ball_radius),32);
+					if(gDC.tileMap[row1][col] == 0 && gDC.tileMap[row2][col] ==0)
+						b.setX(ball_x - gDC.ball_Speed);
+				}else{
+					gDC.balls.remove(index);
+				}
+				break;
+			case 1:
+
+				break;
+			case 2:
+
+				break;
+			case 3:
+
+				break;
+		}
+
 	}
 }

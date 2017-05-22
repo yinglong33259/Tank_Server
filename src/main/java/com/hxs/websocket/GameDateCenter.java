@@ -16,6 +16,10 @@ public class GameDateCenter {
 	 */
 	int mapCols = 30;
 	/**
+	 * 子弹半径
+	 */
+	int ball_radius=4;
+	/**
 	 * 地图小方块的边长
 	 */
 	int Seq_width = 32;
@@ -47,7 +51,13 @@ public class GameDateCenter {
 	 * 子弹数组
 	 */
 	ArrayList<Ball> balls=new ArrayList<Ball>();
+	/**
+	 * 坦克移动速度
+	 */
 	int tank_Speed = 2;
+	/**
+	 * 子弹速度
+	 */
 	int ball_Speed = 4;
 	public static GameDateCenter getInstance(){
 		return new GameDateCenter();
