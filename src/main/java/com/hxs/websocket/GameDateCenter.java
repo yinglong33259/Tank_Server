@@ -54,11 +54,11 @@ public class GameDateCenter {
 	/**
 	 * 坦克移动速度
 	 */
-	int tank_Speed = 2;
+	int tank_Speed = 1;
 	/**
 	 * 子弹速度
 	 */
-	int ball_Speed = 4;
+	int ball_Speed = 2;
 	public static GameDateCenter getInstance(){
 		return new GameDateCenter();
 	}

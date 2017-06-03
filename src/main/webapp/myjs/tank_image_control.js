@@ -5,7 +5,7 @@ function StartGame(){
     window.addEventListener("keydown",eventKeyDown,true);
     window.addEventListener("keyup",eventKeyUp,true);
 
-    setInterval(drawScreen,50);
+    setInterval(drawScreen,20);
     function drawScreen() {
         //画出地图
         context.clearRect(0,0,theCanvas.width,theCanvas.height);

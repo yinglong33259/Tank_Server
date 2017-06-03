@@ -80,7 +80,7 @@ public class RunOneRoomGameLogic implements Runnable{
 				}
 			}
 
-		}, 50, 50);//2s后开始执行，每次执行20ms
+		}, 10, 10);//2s后开始执行，每次执行20ms
 	}
 	@SuppressWarnings("unchecked")
 	public void sendTanksInfo() throws IOException{
@@ -139,18 +139,18 @@ public class RunOneRoomGameLogic implements Runnable{
 				break;
 			case 1:
 				if(tank_y > 0){
-					 int row =(int) Math.floorDiv(tank_y - gDC.tank_Speed,32);
-					 int col1=(int) Math.floorDiv(tank_x,32);
-					 int col2=(int) Math.floorDiv(tank_x+31,32);
+					 int row = Math.floorDiv(tank_y - gDC.tank_Speed,32);
+					 int col1= Math.floorDiv(tank_x,32);
+					 int col2= Math.floorDiv(tank_x+31,32);
 					 if(gDC.tileMap[row][col1] == 0 && gDC.tileMap[row][col2] ==0)
 						 t.setY(tank_y - gDC.tank_Speed);
 				}
 				break;
 			case 2:
 				if(tank_x < (gDC.mapCols-1) * gDC.Seq_width){
-					int col=(int) Math.floorDiv((tank_x+31)+gDC.tank_Speed,32);
-					int row1=(int) Math.floorDiv(tank_y,32);
-					int row2=(int) Math.floorDiv((tank_y+31),32);
+					int col=Math.floorDiv((tank_x+31)+gDC.tank_Speed,32);
+					int row1=Math.floorDiv(tank_y,32);
+					int row2=Math.floorDiv((tank_y+31),32);
 					if(gDC.tileMap[row1][col] == 0 && gDC.tileMap[row2][col] ==0)
 						t.setX(tank_x + gDC.tank_Speed);
 				}
@@ -224,24 +224,60 @@ public class RunOneRoomGameLogic implements Runnable{
 		int ball_r=b.getR();
 		switch (ball_r){
 			case 0:
-				if(ball_x - gDC.ball_radius > 0){
+				if(ball_x - gDC.ball_radius - gDC.ball_Speed> 0){
 					int col= Math.floorDiv(ball_x - gDC.ball_Speed -gDC.ball_radius ,32);
 					int row1= Math.floorDiv(ball_y - gDC.ball_radius,32);
 					int row2= Math.floorDiv((ball_y + gDC.ball_radius),32);
-					if(gDC.tileMap[row1][col] == 0 && gDC.tileMap[row2][col] ==0)
+					if(gDC.tileMap[row1][col] == 0 && gDC.tileMap[row2][col] ==0){
 						b.setX(ball_x - gDC.ball_Speed);
+					}else{
+						gDC.balls.remove(index);
+					}
 				}else{
 					gDC.balls.remove(index);
 				}
 				break;
 			case 1:
-
+				if(ball_y - gDC.ball_radius - gDC.ball_Speed> 0){
+					int row = Math.floorDiv(ball_y - gDC.tank_Speed - gDC.ball_radius,32);
+					int col1= Math.floorDiv(ball_x - gDC.ball_radius ,32);
+					int col2= Math.floorDiv(ball_x + gDC.ball_radius,32);
+					if(gDC.tileMap[row][col1] == 0 && gDC.tileMap[row][col2] ==0){
+						b.setY(ball_y - gDC.ball_Speed);
+					}else{
+						gDC.balls.remove(index);
+					}
+				}else{
+					gDC.balls.remove(index);
+				}
 				break;
 			case 2:
-
+				if(ball_x + gDC.ball_radius + gDC.ball_Speed < gDC.mapCols * gDC.Seq_width){
+					int col= Math.floorDiv(ball_x + gDC.ball_radius + gDC.ball_Speed,32);
+					int row1= Math.floorDiv(ball_y - gDC.ball_radius,32);
+					int row2= Math.floorDiv(ball_y + gDC.ball_radius,32);
+					if(gDC.tileMap[row1][col] == 0 && gDC.tileMap[row2][col] ==0){
+						b.setX(ball_x + gDC.ball_Speed);
+					}else{
+						gDC.balls.remove(index);
+					}
+				}else{
+					gDC.balls.remove(index);
+				}
 				break;
 			case 3:
-
+				if(ball_y + gDC.ball_radius + gDC.ball_Speed< gDC.mapRows * gDC.Seq_width){
+					int row = Math.floorDiv(ball_y+ gDC.ball_radius + gDC.ball_Speed,32);
+					int col1= Math.floorDiv(ball_x - gDC.ball_radius ,32);
+					int col2= Math.floorDiv(ball_x + gDC.ball_radius,32);
+					if(gDC.tileMap[row][col1] == 0 && gDC.tileMap[row][col2] ==0){
+						b.setY(ball_y + gDC.ball_Speed);
+					}else{
+						gDC.balls.remove(index);
+					}
+				}else{
+					gDC.balls.remove(index);
+				}
 				break;
 		}
 
